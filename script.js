@@ -237,8 +237,8 @@ backToTopButton.addEventListener('click', () => {
 // Projects data with ngc property
 const projects = [
     { id: 1, title: 'Meu server de Mine - Ta32', desc: 'O meu server de mine é um diferenciado, ele tem varios modos como 1-Rei da colina \' 2-Stick nock \' 3-Pega bloco , e mais alguns.', img: 'https://i.pinimg.com/1200x/f1/48/27/f14827c3b348d5416b6c354a5c2363b8.jpg', link: 'https://fogao0.github.io/Ta32', ngc: true },
-    { id: 2, title: 'Projeto 2', desc: 'Descrição breve do projeto 2.', img: 'https://via.placeholder.com/300x200?text=Projeto+2', link: '#', ngc: false },
-    { id: 3, title: 'Projeto 3', desc: 'Descrição breve do projeto 3.', img: 'https://via.placeholder.com/300x200?text=Projeto+3', link: '#', ngc: false },
+    { id: 2, title: 'Projeto 2', desc: 'Embreve o projeto 2.', img: 'https://via.placeholder.com/300x200?text=Projeto+2', link: '#', ngc: true },
+    { id: 3, title: 'Projeto 3', desc: 'Embreve o projeto 3.', img: 'https://via.placeholder.com/300x200?text=Projeto+3', link: '#', ngc: true },
     { id: 4, title: 'Projeto 4', desc: 'Descrição breve do projeto 4.', img: 'https://via.placeholder.com/300x200?text=Projeto+4', link: '#', ngc: true },
     { id: 5, title: 'Projeto 5', desc: 'Descrição breve do projeto 5.', img: 'https://via.placeholder.com/300x200?text=Projeto+5', link: '#', ngc: true },
     { id: 6, title: 'Projeto 6', desc: 'Descrição breve do projeto 6.', img: 'https://via.placeholder.com/300x200?text=Projeto+6', link: '#', ngc: false },
@@ -251,7 +251,7 @@ const projects = [
     { id: 13, title: 'Projeto 13', desc: 'Descrição breve do projeto 13.', img: 'https://via.placeholder.com/300x200?text=Projeto+13', link: '#', ngc: true }
 ];
 
-const maxProjects = 1; // Número de 1 a 500 que define o máximo de projetos a aparecer
+const maxProjects = 4; // Número de 1 a 500 que define o máximo de projetos a aparecer
 const availableProjects = projects.filter(p => p.ngc).slice(0, maxProjects);
 
 // Infinite Scrolling
@@ -295,5 +295,6 @@ window.addEventListener('scroll', () => {
 window.addEventListener('load', () => {
     // fetchQuote(); // Removed as per user request
 });
+
 
 
