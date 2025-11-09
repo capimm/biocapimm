@@ -1,2 +1,2 @@
-# biocapimm
-Minha bio :D
+## biocapimm
+ - Apenas minha bio e alguns links com projetos 
