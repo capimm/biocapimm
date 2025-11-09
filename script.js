@@ -251,7 +251,7 @@ const projects = [
     { id: 13, title: 'Projeto 13', desc: 'Descrição breve do projeto 13.', img: 'https://via.placeholder.com/300x200?text=Projeto+13', link: '#', ngc: true }
 ];
 
-const maxProjects = 3; // Número de 1 a 500 que define o máximo de projetos a aparecer
+const maxProjects = 1; // Número de 1 a 500 que define o máximo de projetos a aparecer
 const availableProjects = projects.filter(p => p.ngc).slice(0, maxProjects);
 
 // Infinite Scrolling
@@ -295,3 +295,4 @@ window.addEventListener('scroll', () => {
 window.addEventListener('load', () => {
     // fetchQuote(); // Removed as per user request
 });
+
