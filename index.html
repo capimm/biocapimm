@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPIMM - Criativo Digital</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1382711137824538695/1437232794752254104/cpm_icon_E1CC3EB.png?ex=69127ed8&is=69112d58&hm=d2e15871a3e308eb4bda6ac653ca42de36b7a73bb3027c4dc89d8f9adf09a317&" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .loading.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loading-content {
+            text-align: center;
+            color: #fff;
+        }
+        .loading-text {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        .loading-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: loading 2s infinite;
+        }
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="loading-text">CAPIMM</div>
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <span>CAPIMM</span>
+            </div>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link">Início</a>
+                <a href="#work" class="nav-link">Trabalho</a>
+                <a href="#about" class="nav-link">Sobre</a>
+                <a href="#contact" class="nav-link">Contato</a>
+                <a href="jogos.html" class="nav-link">Jogos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="parallax-bg"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="line">Criando</span>
+                    <span class="line">Experiências</span>
+                    <span class="line">Digitais</span>
+                    <span class="line">Inovadoras</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Sou Capimm, um criador digital apaixonado por Minecraft e desenvolvimento web.
+                    Transformo ideias em experiências interativas e imersivas.
+                </p>
+                <div class="hero-cta">
+                    <a href="#work" class="cta-button primary">Ver Meu Trabalho</a>
+                    <a href="#contact" class="cta-button secondary">Vamos Conversar</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-elements">
+                    <div class="floating-element element-1">
+                        <img src="https://i.pinimg.com/736x/e2/77/b5/e277b521e71a7841efe2e0b7900d669e.jpg" alt="Capimm" class="hero-image">
+                    </div>
+                    <div class="floating-element element-2">
+                        <div class="code-snippet">
+                            <pre><code><div class="creativity">
+  Inovação Digital
+</div></code></pre>
+                        </div>
+                    </div>
+                    <div class="floating-element element-3">
+                        <div class="minecraft-icon">🎮</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-text">Scroll para explorar</div>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work" class="work-section">
+        <div class="section-header sticky-element">
+            <h2 class="section-title">Trabalho</h2>
+            <p class="section-subtitle">Projetos que contam histórias</p>
+        </div>
+
+        <div class="work-cta">
+            <a href="projetos.html" class="cta-button primary">Ver Projetos</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <div class="about-text">
+                <h2 class="about-title">Sobre Mim</h2>
+                <div class="about-description">
+                    <p>Sou um criador digital apaixonado por transformar ideias em experiências memoráveis. Especializo-me em desenvolvimento web criativo e design de interfaces inovadoras.</p>
+                    <p>Minha jornada começou com o Minecraft, onde descobri minha paixão por criar mundos virtuais. Hoje, aplico essa criatividade no desenvolvimento de soluções digitais que fazem a diferença.</p>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <h4>Desenvolvimento Web</h4>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Design Criativo</h4>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Minecraft Development</h4>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Inovação Digital</h4>
+                        <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="floating-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">3+</div>
+                        <div class="stat-label">Projetos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2+</div>
+                        <div class="stat-label">Anos de Experiência</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Criatividade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="contact-content">
+            <h2 class="contact-title">Vamos Criar Algo Incrível</h2>
+            <p class="contact-subtitle">Pronto para transformar sua ideia em realidade?</p>
+
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <div class="contact-icon">💬</div>
+                    <h3>Discord</h3>
+                    <p>Converse comigo em tempo real</p>
+                    <a href="https://discord.gg/gbQdrTSdXX" class="contact-link" target="_blank">Entrar no Server</a>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <h3>TikTok</h3>
+                    <p>Siga meu conteúdo criativo</p>
+                    <a href="https://www.tiktok.com/@capim_valha" class="contact-link" target="_blank">@capim_valha</a>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p>Para projetos e colaborações</p>
+                    <a href="mailto:capimvalha@gmail.com" class="contact-link">capimvalha@gmail.com</a>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📺</div>
+                    <h3>YouTube</h3>
+                    <p>Conteúdo em vídeo chegando em breve</p>
+                    <a href="#" class="contact-link">Em breve</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span>CAPIMM</span>
+            </div>
+            <div class="footer-text">
+                <p>&copy; 2025 Capimm. Criado com paixão e criatividade.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos 2D - CAPIMM</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1382711137824538695/1437232794752254104/cpm_icon_E1CC3EB.png?ex=69127ed8&is=69112d58&hm=d2e15871a3e308eb4bda6ac653ca42de36b7a73bb3027c4dc89d8f9adf09a317&" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .games-section {
+            padding: 8rem 2rem 4rem;
+            background: #000000;
+            min-height: 100vh;
+        }
+
+        .games-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .games-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .games-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .games-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 0, 0.2);
+        }
+
+        .game-image {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, #00ff00, #004400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .game-content {
+            padding: 2rem;
+        }
+
+        .game-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .game-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .game-features {
+            margin-bottom: 1.5rem;
+        }
+
+        .game-features h4 {
+            color: #00ff00;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .feature-tag {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .play-button {
+            width: 100%;
+            padding: 1rem;
+            background: #00ff00;
+            color: #000000;
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        /* Game Modal */
+        .game-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .game-modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            background: #000000;
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            max-width: 1200px;
+            width: 95%;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-header {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-title-modal {
+            color: #00ff00;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .game-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .game-close:hover {
+            color: #00ff00;
+        }
+
+        .game-content-area {
+            display: flex;
+            height: calc(90vh - 80px);
+        }
+
+        .game-sidebar {
+            width: 300px;
+            border-right: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .game-main {
+            flex: 1;
+            position: relative;
+        }
+
+        .game-canvas {
+            width: 100%;
+            height: 100%;
+            background: #111111;
+            display: block;
+        }
+
+        /* Character Selection */
+        .character-selection {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selection-container {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .selection-title {
+            color: #00ff00;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .player-name-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .player-name-input:focus {
+            outline: none;
+            border-color: #00ff00;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .selection-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            color: #00ff00;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-card:hover,
+        .option-card.selected {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .option-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-name {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .start-game-btn {
+            padding: 1rem 2rem;
+            background: #00ff00;
+            color: #000000;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .start-game-btn:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: #00ff00;
+            transform: scale(1.2);
+        }
+
+        .step.completed {
+            background: #00ff00;
+        }
+
+        .selection-step {
+            display: none;
+        }
+
+        .selection-step.active {
+            display: block;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00ff00;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: #00ff00;
+            color: #000000;
+            border-color: #00ff00;
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #00dd00;
+            transform: translateY(-1px);
+        }
+
+        .option-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Game UI */
+        .game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .health-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff8888);
+            transition: width 0.3s ease;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
+        .waiting-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff00;
+            font-size: 1.5rem;
+            text-align: center;
+            z-index: 5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-content-area {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .game-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            }
+
+            .selection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-canvas {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html" style="color: inherit; text-decoration: none;">CAPIMM</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html#hero" class="nav-link">Início</a>
+                <a href="index.html#work" class="nav-link">Trabalho</a>
+                <a href="index.html#about" class="nav-link">Sobre</a>
+                <a href="index.html#contact" class="nav-link">Contato</a>
+                <a href="projetos.html" class="nav-link">Projetos</a>
+                <a href="jogos.html" class="nav-link active">Jogos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Games Section -->
+    <section class="games-section">
+        <div class="games-header">
+            <h1 class="games-title">Jogos 2D</h1>
+            <p class="games-subtitle">Experiências interativas e jogos multiplayer</p>
+        </div>
+
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="game-image">
+                    ⚔️
+                </div>
+                <div class="game-content">
+                    <h3 class="game-title">Battle Arena 2D</h3>
+                    <p class="game-description">Jogo de PvP 2D com dash, armas especiais e poderes únicos. Lute contra outros jogadores em tempo real!</p>
+
+                    <div class="game-features">
+                        <h4>Características</h4>
+                        <div class="feature-list">
+                            <span class="feature-tag">Multiplayer</span>
+                            <span class="feature-tag">PvP</span>
+                            <span class="feature-tag">Dash</span>
+                            <span class="feature-tag">Armas</span>
+                            <span class="feature-tag">Poderes</span>
+                        </div>
+                    </div>
+
+                    <button class="play-button" onclick="openGame('battle-arena')">Jogar Agora</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Modal -->
+    <div class="game-modal" id="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <h2 class="game-title-modal" id="game-title">Battle Arena 2D</h2>
+                <button class="game-close" onclick="closeGame()">&times;</button>
+            </div>
+
+            <div class="game-content-area">
+                <div class="game-sidebar">
+                    <div class="player-info">
+                        <div id="player-list">Aguardando jogadores...</div>
+                    </div>
+                </div>
+
+                <div class="game-main">
+                    <canvas class="game-canvas" id="game-canvas"></canvas>
+
+                    <!-- Character Selection -->
+                    <div class="character-selection" id="character-selection">
+                        <div class="selection-container">
+                            <h2 class="selection-title">Escolha seu Personagem</h2>
+
+                            <!-- Step Indicator -->
+                            <div class="step-indicator">
+                                <div class="step active" data-step="1"></div>
+                                <div class="step" data-step="2"></div>
+                                <div class="step" data-step="3"></div>
+                                <div class="step" data-step="4"></div>
+                            </div>
+
+                            <!-- Step 1: Name -->
+                            <div class="selection-step active" data-step="1">
+                                <h3 class="category-title">Digite seu nome</h3>
+                                <input type="text" class="player-name-input" id="player-name" placeholder="Seu nome de jogador" maxlength="20">
+                                <div class="navigation-buttons">
+                                    <button class="nav-btn" disabled>Anterior</button>
+                                    <button class="nav-btn primary" id="next-to-weapon">Próximo</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Weapon -->
+                            <div class="selection-step" data-step="2">
+                                <h3 class="category-title">Escolha sua Arma</h3>
+                                <div class="selection-grid">
+                                    <div class="option-card" data-type="weapon" data-id="sword">
+                                        <div class="option-icon">⚔️</div>
+                                        <div class="option-name">Espada</div>
+                                        <div class="option-description">Dano equilibrado, alcance médio</div>
+                                    </div>
+                                    <div class="option-card" data-type="weapon" data-id="bow">
+                                        <div class="option-icon">🏹</div>
+                                        <div class="option-name">Arco</div>
+                                        <div class="option-description">Ataque à distância, dano reduzido</div>
+                                    </div>
+                                    <div class="option-card" data-type="weapon" data-id="staff">
+                                        <div class="option-icon">🪄</div>
+                                        <div class="option-name">Cajado</div>
+                                        <div class="option-description">Alto dano mágico, alcance médio</div>
+                                    </div>
+                                </div>
+                                <div class="navigation-buttons">
+                                    <button class="nav-btn" id="back-to-name">Anterior</button>
+                                    <button class="nav-btn primary" id="next-to-power">Próximo</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Power -->
+                            <div class="selection-step" data-step="3">
+                                <h3 class="category-title">Escolha seu Poder</h3>
+                                <div class="selection-grid">
+                                    <div class="option-card" data-type="power" data-id="fire">
+                                        <div class="option-icon">🔥</div>
+                                        <div class="option-name">Fogo</div>
+                                        <div class="option-description">Causa queimadura por 3 segundos</div>
+                                    </div>
+                                    <div class="option-card" data-type="power" data-id="ice">
+                                        <div class="option-icon">❄️</div>
+                                        <div class="option-name">Gelo</div>
+                                        <div class="option-description">Reduz velocidade do inimigo</div>
+                                    </div>
+                                    <div class="option-card" data-type="power" data-id="lightning">
+                                        <div class="option-icon">⚡</div>
+                                        <div class="option-name">Raio</div>
+                                        <div class="option-description">Causa dano em área aos inimigos próximos</div>
+                                    </div>
+                                </div>
+                                <div class="navigation-buttons">
+                                    <button class="nav-btn" id="back-to-weapon">Anterior</button>
+                                    <button class="nav-btn primary" id="next-to-status">Próximo</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Status -->
+                            <div class="selection-step" data-step="4">
+                                <h3 class="category-title">Escolha seu Status</h3>
+                                <div class="selection-grid">
+                                    <div class="option-card" data-type="status" data-id="speed">
+                                        <div class="option-icon">💨</div>
+                                        <div class="option-name">Velocidade</div>
+                                        <div class="option-description">+50% velocidade de movimento</div>
+                                    </div>
+                                    <div class="option-card" data-type="status" data-id="health">
+                                        <div class="option-icon">❤️</div>
+                                        <div class="option-name">Vida</div>
+                                        <div class="option-description">+50% vida máxima</div>
+                                    </div>
+                                    <div class="option-card" data-type="status" data-id="strength">
+                                        <div class="option-icon">💪</div>
+                                        <div class="option-name">Força</div>
+                                        <div class="option-description">+50% dano causado</div>
+                                    </div>
+                                </div>
+                                <div class="navigation-buttons">
+                                    <button class="nav-btn" id="back-to-power">Anterior</button>
+                                    <button class="nav-btn primary" id="start-game-btn" disabled>Entrar no Jogo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game UI -->
+                    <div class="game-ui" id="game-ui" style="display: none;">
+                        <div class="health-bar">
+                            <div class="health-fill" id="health-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="player-info">
+                            <span id="current-player">Jogador</span>
+                            <span id="game-status">Preparando...</span>
+                        </div>
+                    </div>
+
+                    <div class="waiting-message" id="waiting-message">
+                        Aguardando outros jogadores...<br>
+                        <small>Convide amigos para jogar!</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jogos.js"></script>
+</body>
+</html>
