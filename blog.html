@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Blog - CAPIMM</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1382711137824538695/1437232794752254104/cpm_icon_E1CC3EB.png?ex=69127ed8&is=69112d58&hm=d2e15871a3e308eb4bda6ac653ca42de36b7a73bb3027c4dc89d8f9adf09a317&" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <style>
+        .blog-section {
+            padding: 8rem 2rem 4rem;
+            background: #000000;
+        }
+        .blog-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .blog-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: #111111;
+            margin: 5% auto;
+            padding: 0;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.2);
+        }
+        .modal-header {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .modal-header h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.5rem;
+        }
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close:hover {
+            color: #00ff00;
+        }
+
+        /* Form Styles */
+        .post-form-modal input, .post-form-modal textarea {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .post-form-modal input::placeholder, .post-form-modal textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Toolbar */
+        .editor-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .toolbar-btn {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .toolbar-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Image Upload */
+        .image-upload {
+            margin: 1rem 0;
+        }
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        .image-upload label {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .image-upload label:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        /* Preview */
+        .preview-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .preview-section h3 {
+            color: #00ff00;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        /* Post Styles */
+        .post {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: infiniteFloat 10s ease-in-out infinite;
+        }
+        .post:nth-child(odd) {
+            animation-delay: 0s;
+        }
+        .post:nth-child(even) {
+            animation-delay: 5s;
+        }
+        @keyframes infiniteFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(0px) rotate(0deg); }
+            75% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        /* Parallax effect */
+        .blog-section {
+            perspective: 1000px;
+        }
+        .post {
+            transform-style: preserve-3d;
+        }
+
+        /* Menu for delete */
+        .post-menu {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 10;
+            min-width: 150px;
+        }
+        .post-menu.show {
+            display: block;
+        }
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #00ff00;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .menu-btn:hover {
+            color: #ffffff;
+        }
+        .menu-item {
+            background: none;
+            border: none;
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+        .menu-item:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+        .delete-btn {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff4444;
+        }
+        .delete-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+        .like-btn {
+            color: #ff69b4;
+        }
+        .comment-btn {
+            color: #00ff00;
+        }
+
+        /* Poll Styles */
+        .poll {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .poll-option {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .poll-option:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+        .poll-results {
+            margin-top: 1rem;
+        }
+        .poll-bar {
+            background: rgba(0, 255, 0, 0.3);
+            height: 20px;
+            border-radius: 10px;
+            margin: 0.25rem 0;
+            position: relative;
+        }
+        .poll-percentage {
+            position: absolute;
+            right: 0.5rem;
+            top: 0;
+            color: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        /* Comments */
+        .comments-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .comment {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .comment-author {
+            color: #00ff00;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .comment-date {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .add-comment {
+            margin-top: 1rem;
+        }
+        .add-comment textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            resize: vertical;
+        }
+        .add-comment button {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-comment button:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+        .post h1, .post h2, .post h3, .post h4, .post h5, .post h6 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        .post h1 { font-size: 2rem; border-bottom: 2px solid #00ff00; padding-bottom: 0.5rem; }
+        .post h2 { font-size: 1.8rem; border-bottom: 1px solid #00ff00; padding-bottom: 0.3rem; }
+        .post h3 { font-size: 1.5rem; }
+        .post blockquote {
+            border-left: 4px solid #00ff00;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .post p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .post strong { color: #ffffff; font-weight: 600; }
+        .post em { font-style: italic; }
+        .post code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
+        .post pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .post pre code {
+            background: none;
+            padding: 0;
+        }
+        .post-date {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            margin-bottom: 1rem;
+        }
+        .error {
+            color: #ff4444;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Keyboard shortcut hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            font-size: 0.8rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <span>CAPIMM</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="projetos.html" class="nav-link">Trabalho</a>
+                <a href="#about" class="nav-link">Sobre</a>
+                <a href="#contact" class="nav-link">Contato</a>
+                <a href="jogos.html" class="nav-link">Jogos</a>
+                <a href="blog.html" class="nav-link active">Blog</a>
+            </div>
+            <div class="user-info">
+                <span id="userDisplay"></span>
+                <button id="authBtn" class="nav-link" onclick="toggleAuthModal()">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="blog-content">
+            <h1 class="blog-title">Meu Blog</h1>
+
+            <div id="postsContainer">
+                <!-- Posts serão inseridos aqui -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Autenticação</h2>
+                <span class="close" onclick="closePasswordModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="post-form-modal" id="passwordForm">
+                    <input type="password" id="passwordInput" placeholder="Digite a senha" required>
+                    <div id="passwordErrorMessage" class="error"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="passwordForm" class="toolbar-btn" style="background: #00ff00; color: #000000;">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Creation Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Criar Novo Post</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="post-form-modal" id="postModalForm">
+                    <input type="text" id="modalPostTitle" placeholder="Título do post" required>
+
+                    <div class="editor-toolbar">
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('**', '**')">Negrito</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('*', '*')">Itálico</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('# ', '')">Título 1</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('## ', '')">Título 2</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('> ', '')">Citação</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('```\n', '\n```')">Código</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('- ', '')">Lista</button>
+                        <button type="button" class="toolbar-btn" onclick="insertMarkdown('[Link](url)', '')">Link</button>
+                        <button type="button" class="toolbar-btn" onclick="togglePollSection()">📊 Enquete</button>
+                    </div>
+
+                    <div id="pollSection" style="display: none; margin: 1rem 0; padding: 1rem; background: rgba(0, 255, 0, 0.05); border-radius: 8px;">
+                        <h4 style="color: #00ff00; margin-bottom: 1rem;">Criar Enquete</h4>
+                        <input type="text" id="pollQuestion" placeholder="Pergunta da enquete" style="width: 100%; margin-bottom: 0.5rem;">
+                        <select id="pollType" style="width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; color: #ffffff;">
+                            <option value="single">Voto único (pode trocar)</option>
+                            <option value="multiple">Votos múltiplos</option>
+                        </select>
+                        <div id="pollOptions">
+                            <input type="text" class="poll-option-input" placeholder="Opção 1" style="width: 100%; margin-bottom: 0.5rem;">
+                            <input type="text" class="poll-option-input" placeholder="Opção 2" style="width: 100%; margin-bottom: 0.5rem;">
+                        </div>
+                        <button type="button" class="toolbar-btn" onclick="addPollOption()" style="margin-right: 0.5rem;">+ Opção</button>
+                        <button type="button" class="toolbar-btn" onclick="removePollOption()">- Opção</button>
+                    </div>
+
+                    <textarea id="modalPostContent" placeholder="Conteúdo do post (suporta Markdown como Discord)" rows="10" required></textarea>
+
+                    <div class="image-upload">
+                        <input type="file" id="imageUpload" accept="image/*" multiple>
+                        <label for="imageUpload">📎 Anexar Imagens</label>
+                        <div id="imagePreview"></div>
+                    </div>
+
+                    <input type="password" id="modalPostPassword" placeholder="Senha para publicar" required>
+
+                    <div class="preview-section">
+                        <h3>Prévia:</h3>
+                        <div id="previewContent"></div>
+                    </div>
+                </form>
+                <div id="modalErrorMessage" class="error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="previewBtn" class="toolbar-btn">Atualizar Prévia</button>
+                <button type="submit" form="postModalForm" class="toolbar-btn" style="background: #00ff00; color: #000000;">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="authModalTitle">Login</h2>
+                <span class="close" onclick="closeAuthModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="post-form-modal" id="authForm">
+                    <input type="text" id="authUsername" placeholder="Nome de usuário" required>
+                    <input type="password" id="authPassword" placeholder="Senha" required>
+                    <div id="authErrorMessage" class="error"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="toolbar-btn" onclick="toggleAuthMode()">Registrar</button>
+                <button type="submit" form="authForm" class="toolbar-btn" style="background: #00ff00; color: #000000;" id="authSubmitBtn">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcut Hint -->
+    <div class="keyboard-hint">
+         <strong>alt + b</strong>
+    </div>
+
+    <script>
+        // Modal functionality
+        const passwordModal = document.getElementById('passwordModal');
+        const modal = document.getElementById('postModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        // Open password modal with keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey && (e.key === 'b' || e.key === 'B')) {
+                e.preventDefault();
+                if (!passwordModal.style.display || passwordModal.style.display === 'none') {
+                    openPasswordModal();
+                }
+            }
+        });
+
+        function openPasswordModal() {
+            passwordModal.style.display = 'block';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordModal() {
+            passwordModal.style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordErrorMessage').textContent = '';
+        }
+
+        function openModal() {
+            modal.style.display = 'block';
+            document.getElementById('modalPostTitle').focus();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            clearModalForm();
+        }
+
+        closeBtn.onclick = closeModal;
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+            if (event.target == passwordModal) {
+                closePasswordModal();
+            }
+        }
+
+        function clearModalForm() {
+            document.getElementById('modalPostTitle').value = '';
+            document.getElementById('modalPostContent').value = '';
+            document.getElementById('modalPostPassword').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('previewContent').innerHTML = '';
+            document.getElementById('modalErrorMessage').textContent = '';
+        }
+
+        // Markdown parsing function
+        function parseMarkdown(text) {
+            let html = text;
+
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+            // Bold and italic
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Blockquotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+            // Code blocks
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Lists
+            html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+
+            return html;
+        }
+
+        // Insert markdown at cursor position
+        function insertMarkdown(before, after) {
+            const textarea = document.getElementById('modalPostContent');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            const replacement = before + selectedText + after;
+
+            textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start + before.length;
+            textarea.selectionEnd = start + before.length + selectedText.length;
+            updatePreview();
+        }
+
+        // Update preview
+        function updatePreview() {
+            const content = document.getElementById('modalPostContent').value;
+            const previewDiv = document.getElementById('previewContent');
+            previewDiv.innerHTML = parseMarkdown(content);
+        }
+
+        // Image upload handling
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const previewDiv = document.getElementById('imagePreview');
+            previewDiv.innerHTML = '';
+
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '200px';
+                        img.style.margin = '0.5rem';
+                        img.style.borderRadius = '8px';
+                        previewDiv.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        // Preview button
+        document.getElementById('previewBtn').addEventListener('click', updatePreview);
+
+        // Modal form submission
+        document.getElementById('postModalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('modalPostTitle').value.trim();
+            const rawContent = document.getElementById('modalPostContent').value.trim();
+            const password = document.getElementById('modalPostPassword').value;
+            const errorDiv = document.getElementById('modalErrorMessage');
+
+            if (password !== CONFIG.BLOG_PASSWORD) {
+                errorDiv.textContent = 'Senha incorreta!';
+                return;
+            }
+
+
+
+            // Process images
+            const imageFiles = document.getElementById('imageUpload').files;
+            let content = rawContent;
+
+            // Convert images to base64 and embed in content
+            if (imageFiles.length > 0) {
+                const promises = [];
+                for (let file of imageFiles) {
+                    promises.push(new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            resolve(`<img src="${e.target.result}" alt="Imagem anexada">`);
+                        };
+                        reader.readAsDataURL(file);
+                    }));
+                }
+
+                Promise.all(promises).then(images => {
+                    content = rawContent + '\n\n' + images.join('\n\n');
+                    savePost(title, content);
+                    closeModal();
+                    loadPosts();
+                    alert('Post publicado com sucesso!');
+                });
+            } else {
+                savePost(title, content);
+                closeModal();
+                loadPosts();
+                alert('Post publicado com sucesso!');
+            }
+        });
+
+        // Carregar posts do localStorage
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+
+            posts.forEach((post, index) => {
+                const likes = post.likes || 0;
+                const comments = post.comments || [];
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                let pollHtml = '';
+                if (post.poll) {
+                    const totalVotes = post.poll.options.reduce((sum, opt) => sum + opt.votes, 0);
+                    pollHtml = `
+                        <div class="poll">
+                            <h4>${post.poll.question}</h4>
+                            ${post.poll.options.map((option, optIndex) => {
+                                const percentage = totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0;
+                                return `
+                                    <div class="poll-option" onclick="votePoll(${index}, ${optIndex})">
+                                        ${option.text} (${option.votes} votos)
+                                        <div class="poll-bar" style="width: ${percentage}%">
+                                            <span class="poll-percentage">${percentage}%</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                postElement.innerHTML = `
+                    <button class="menu-btn" onclick="toggleMenu(${index})">⋮</button>
+                    <div class="post-menu" id="menu-${index}">
+                        <button class="menu-item like-btn" onclick="likePost(${index})">❤️ Curtir (${likes})</button>
+                        <button class="menu-item comment-btn" onclick="toggleComments(${index})">💬 Comentar (${comments.length})</button>
+                        <button class="menu-item delete-btn" onclick="deletePost(${index})">🗑️ Excluir Post</button>
+                    </div>
+                    <h3>${post.title}</h3>
+                    <div class="post-date">${new Date(post.date).toLocaleString('pt-BR')}</div>
+                    <div>${parseMarkdown(post.content)}</div>
+                    ${pollHtml}
+                    <div class="comments-section" id="comments-${index}" style="display: none;">
+                        <div id="comments-list-${index}"></div>
+                        <div class="add-comment">
+                            <textarea placeholder="Adicione um comentário..." id="comment-input-${index}"></textarea>
+                            <button onclick="addComment(${index})">Comentar</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(postElement);
+                loadComments(index);
+            });
+        }
+
+        // Toggle menu
+        function toggleMenu(index) {
+            const menu = document.getElementById(`menu-${index}`);
+            menu.classList.toggle('show');
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('menu-btn')) {
+                document.querySelectorAll('.post-menu').forEach(menu => menu.classList.remove('show'));
+            }
+        });
+
+        // Salvar post
+        function savePost(title, content) {
+            const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            const pollQuestion = document.getElementById('pollQuestion').value.trim();
+            const pollType = document.getElementById('pollType').value;
+            const pollOptions = Array.from(document.querySelectorAll('.poll-option-input')).map(input => input.value.trim()).filter(val => val);
+            const poll = pollQuestion && pollOptions.length > 0 ? { question: pollQuestion, type: pollType, options: pollOptions.map(opt => ({ text: opt, votes: 0, voters: [] })), votedUsers: [] } : null;
+            posts.unshift({
+                title: title,
+                content: content,
+                date: new Date().toISOString(),
+                likes: 0,
+                comments: [],
+                poll: poll
+            });
+            localStorage.setItem('blogPosts', JSON.stringify(posts));
+        }
+
+        // Deletar post
+        function deletePost(index) {
+            const password = prompt('Digite a senha para excluir o post:');
+            if (password === CONFIG.BLOG_PASSWORD) {
+                const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+                posts.splice(index, 1);
+                localStorage.setItem('blogPosts', JSON.stringify(posts));
+                loadPosts();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        // Curtir post
+        function likePost(index) {
+            if (!requireLogin()) return;
+
+            const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            const users = JSON.parse(localStorage.getItem('blogUsers')) || [];
+            const userIndex = users.findIndex(user => user.username === currentUser.username);
+
+            if (userIndex !== -1 && !users[userIndex].likes.includes(index)) {
+                posts[index].likes = (posts[index].likes || 0) + 1;
+                users[userIndex].likes.push(index);
+                localStorage.setItem('blogPosts', JSON.stringify(posts));
+                localStorage.setItem('blogUsers', JSON.stringify(users));
+                loadPosts();
+            }
+        }
+
+        // Toggle comments
+        function toggleComments(index) {
+            const commentsSection = document.getElementById(`comments-${index}`);
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Add comment
+        function addComment(index) {
+            if (!requireLogin()) return;
+
+            const input = document.getElementById(`comment-input-${index}`);
+            const commentText = input.value.trim();
+            if (commentText) {
+                const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+                posts[index].comments = posts[index].comments || [];
+                posts[index].comments.push({
+                    text: commentText,
+                    author: currentUser.username,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('blogPosts', JSON.stringify(posts));
+                input.value = '';
+                loadComments(index);
+            }
+        }
+
+        // Load comments
+        function loadComments(index) {
+            const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            const commentsList = document.getElementById(`comments-list-${index}`);
+            commentsList.innerHTML = '';
+            const comments = posts[index].comments || [];
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <div class="comment-author">${comment.author}</div>
+                    <div class="comment-date">${new Date(comment.date).toLocaleString('pt-BR')}</div>
+                    <div>${comment.text}</div>
+                `;
+                commentsList.appendChild(commentElement);
+            });
+        }
+
+        // Toggle poll section
+        function togglePollSection() {
+            const pollSection = document.getElementById('pollSection');
+            pollSection.style.display = pollSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Add poll option
+        function addPollOption() {
+            const pollOptions = document.getElementById('pollOptions');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'poll-option-input';
+            input.placeholder = `Opção ${pollOptions.children.length + 1}`;
+            input.style.width = '100%';
+            input.style.marginBottom = '0.5rem';
+            pollOptions.appendChild(input);
+        }
+
+        // Remove poll option
+        function removePollOption() {
+            const pollOptions = document.getElementById('pollOptions');
+            if (pollOptions.children.length > 2) {
+                pollOptions.removeChild(pollOptions.lastElementChild);
+            }
+        }
+
+        // Vote in poll
+        function votePoll(postIndex, optionIndex) {
+            if (!requireLogin()) return;
+
+            const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            const poll = posts[postIndex].poll;
+            if (!poll) return;
+
+            const username = currentUser.username;
+
+            if (poll.type === 'single') {
+                // Find previous vote
+                let previousVoteIndex = -1;
+                poll.options.forEach((opt, idx) => {
+                    if (opt.voters.includes(username)) {
+                        previousVoteIndex = idx;
+                    }
+                });
+
+                if (previousVoteIndex !== -1 && previousVoteIndex !== optionIndex) {
+                    // Remove previous vote
+                    poll.options[previousVoteIndex].votes--;
+                    poll.options[previousVoteIndex].voters = poll.options[previousVoteIndex].voters.filter(u => u !== username);
+                }
+
+                if (previousVoteIndex !== optionIndex) {
+                    // Add new vote
+                    poll.options[optionIndex].votes++;
+                    poll.options[optionIndex].voters.push(username);
+                } else {
+                    // Remove vote if clicking same
+                    poll.options[optionIndex].votes--;
+                    poll.options[optionIndex].voters = poll.options[optionIndex].voters.filter(u => u !== username);
+                }
+            } else { // multiple
+                if (poll.options[optionIndex].voters.includes(username)) {
+                    // Remove vote
+                    poll.options[optionIndex].votes--;
+                    poll.options[optionIndex].voters = poll.options[optionIndex].voters.filter(u => u !== username);
+                } else {
+                    // Add vote
+                    poll.options[optionIndex].votes++;
+                    poll.options[optionIndex].voters.push(username);
+                }
+            }
+
+            localStorage.setItem('blogPosts', JSON.stringify(posts));
+            loadPosts();
+        }
+
+        // Password form submission
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('passwordErrorMessage');
+
+            if (password === CONFIG.BLOG_PASSWORD) {
+                closePasswordModal();
+                openModal();
+            } else {
+                errorDiv.textContent = 'Senha incorreta!';
+            }
+        });
+
+        // Authentication functions
+        let currentUser = null;
+        let isLoginMode = true;
+
+        // Initialize auth on page load
+        function initAuth() {
+            const storedUser = sessionStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                updateAuthUI();
+            }
+        }
+
+        // Toggle auth modal
+        function toggleAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.style.display = modal.style.display === 'none' || !modal.style.display ? 'block' : 'none';
+            if (modal.style.display === 'block') {
+                document.getElementById('authUsername').focus();
+            }
+        }
+
+        // Close auth modal
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authErrorMessage').textContent = '';
+            isLoginMode = true;
+            updateAuthModal();
+        }
+
+        // Toggle between login and register
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            updateAuthModal();
+        }
+
+        // Update auth modal UI
+        function updateAuthModal() {
+            const title = document.getElementById('authModalTitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleBtn = document.querySelector('#authModal .modal-footer button:first-child');
+
+            if (isLoginMode) {
+                title.textContent = 'Login';
+                submitBtn.textContent = 'Entrar';
+                toggleBtn.textContent = 'Registrar';
+            } else {
+                title.textContent = 'Registrar';
+                submitBtn.textContent = 'Registrar';
+                toggleBtn.textContent = 'Login';
+            }
+        }
+
+        // Handle auth form submission
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const errorDiv = document.getElementById('authErrorMessage');
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Preencha todos os campos!';
+                return;
+            }
+
+            if (isLoginMode) {
+                login(username, password);
+            } else {
+                register(username, password);
+            }
+        });
+
+        // Register user
+        function register(username, password) {
+            const users = JSON.parse(localStorage.getItem('blogUsers')) || [];
+            const existingUser = users.find(user => user.username === username);
+
+            if (existingUser) {
+                document.getElementById('authErrorMessage').textContent = 'Usuário já existe!';
+                return;
+            }
+
+            // Simple hash for demo (in real app use proper hashing)
+            const hashedPassword = btoa(password);
+            users.push({
+                username: username,
+                password: hashedPassword,
+                likes: [],
+                comments: []
+            });
+
+            localStorage.setItem('blogUsers', JSON.stringify(users));
+            login(username, password);
+        }
+
+        // Login user
+        function login(username, password) {
+            const users = JSON.parse(localStorage.getItem('blogUsers')) || [];
+            const user = users.find(user => user.username === username);
+
+            if (!user || user.password !== btoa(password)) {
+                document.getElementById('authErrorMessage').textContent = 'Usuário ou senha incorretos!';
+                return;
+            }
+
+            currentUser = user;
+            sessionStorage.setItem('currentUser', JSON.stringify(user));
+            updateAuthUI();
+            closeAuthModal();
+        }
+
+        // Logout user
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            updateAuthUI();
+        }
+
+        // Update auth UI
+        function updateAuthUI() {
+            const userDisplay = document.getElementById('userDisplay');
+            const authBtn = document.getElementById('authBtn');
+
+            if (currentUser) {
+                userDisplay.textContent = `Olá, ${currentUser.username}!`;
+                authBtn.textContent = 'Logout';
+                authBtn.onclick = logout;
+            } else {
+                userDisplay.textContent = '';
+                authBtn.textContent = 'Login';
+                authBtn.onclick = toggleAuthModal;
+            }
+        }
+
+        // Check if user is logged in
+        function requireLogin() {
+            if (!currentUser) {
+                toggleAuthModal();
+                return false;
+            }
+            return true;
+        }
+
+        // Carregar posts ao iniciar
+        loadPosts();
+        initAuth();
+
+        // Custom cursor effect
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        cursor.style.cssText = `
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        `;
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+        });
+
+        // Hover effects for interactive elements
+        document.querySelectorAll('a, button, input, textarea').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursor.style.borderColor = '#ffffff';
+            });
+
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.borderColor = '#00ff00';
+            });
+        });
+    </script>
+</body>
+</html>
